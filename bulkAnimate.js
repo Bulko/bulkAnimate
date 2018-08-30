@@ -10,7 +10,7 @@
  * Optional Dependecies
  * Animate.css
  * 
- * How to ise it
+ * How to use it
  *
  * In your main js file import this file
  * `import BulkAnimate from './{YOUR-PATH}/bulkAnimate';`
@@ -23,6 +23,9 @@
  * 		[ ".element-selector", "animation-class" ],
  * 	]);
  */
+
+// import bulkLazyload;
+
 export default class BulkAnimate {
 	init( animation )
 	{
@@ -30,10 +33,12 @@ export default class BulkAnimate {
 		setTimeout(function()
 		{
 			bulkAnimate.setAnimationList( animation );
-		}, 1000);
+		}, 500);
 
 		$(window).scroll(function() {
-			let scroll = $(window).scrollTop();
+			bulkAnimate.setAnimationList( animation );
+		});
+		$(window).on('hashchange', function (e) {
 			bulkAnimate.setAnimationList( animation );
 		});
 	}
@@ -74,6 +79,10 @@ export default class BulkAnimate {
 				let $elemToLoad = $(this);
 				setTimeout(function()
 				{
+					if ( typeof window.bulkLazyload.loadwithlazyiness === "function" )
+					{
+						window.bulkLazyload.loadwithlazyiness();
+					}
 					$elemToLoad.css({ "visibility" : "visible" });
 					$elemToLoad.addClass( 'animated ' + animation );
 				}, tempo * it );
@@ -82,6 +91,14 @@ export default class BulkAnimate {
 		}
 	}
 
+	/**
+	 * @author Golga <r-ro@bulko.net>
+	 * @since Legacy
+	 *
+	 * @param String elem (selector)
+	 * @param String evalType
+	 * @return Bool
+	 */
 	checkVisible( elem, evalType )
 	{
 		evalType = evalType || "visible";
